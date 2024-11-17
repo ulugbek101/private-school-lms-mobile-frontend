@@ -52,6 +52,7 @@ function LoginScreen() {
                         <TextInput value={password} onChangeText={password => setPassword(password)} style={styles.input} placeholder="Parol" placeholderTextColor="white" secureTextEntry={!passwordIsVisible} />
                     </View>
                     <Button onPress={handleLogin} text="Tizimga kirish" btnStyle={styles.btnStyle} />
+                    {/* Loader here on button press */}
                 </View>
             </View>
         </ImageBackground>

@@ -7,7 +7,7 @@ function Container({ children }) {
 const styles = StyleSheet.create({
 	container: {
         flex: 1,
-		padding: 25,
+		padding: 20,
 	},
 });
 

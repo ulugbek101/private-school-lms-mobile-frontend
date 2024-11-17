@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { createContext, useLayoutEffect, useState } from "react";
+import { createContext, useEffect, useLayoutEffect, useState } from "react";
 
 export const AuthContext = createContext({
 	user: null,
@@ -16,7 +16,7 @@ function AuthContextProvider({ children }) {
 	const [authTokens, setAuthTokens] = useState(null);
 	const navigation = useNavigation();
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		async function checkAuthTokens() {
 			try {
 				const tokens = await AsyncStorage.getItem("authTokens");
@@ -45,7 +45,7 @@ function AuthContextProvider({ children }) {
 
 	async function login(email, password, setError) {
 		try {
-			const response = await axios.post("http://localhost:8000/api/v1/token/", {
+			const response = await axios.post("https://019d-92-63-204-102.ngrok-free.app/api/v1/token/", {
 				email,
 				password,
 			});
@@ -61,8 +61,7 @@ function AuthContextProvider({ children }) {
 		} catch (error) {
 			if (error.status === 401) {
 				setError(401);
-			}
-			else {
+			} else {
 				setError(500);
 				console.error("Login error:", error);
 			}
