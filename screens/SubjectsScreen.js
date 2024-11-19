@@ -1,24 +1,40 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import Container from "../components/Layouts/Container";
-import Button from "../components/UI/Button"
-import { FlatList, ScrollView } from "react-native-gesture-handler"
-import { Ionicons } from "react-native-vector-icons"
+import ModalOverLay from "../components/LoadingOverlay";
+import Button from "../components/UI/Button";
+
+import SubjectTableItem from "../components/Subjects/SubjectTableItem";
+import useAxios from "../hooks/useAxios";
 
 function SubjectsScreen() {
-	const SUBJECTS = [
-		{
-			id: 1,
-			name: "Matematika",
-		},
-		{
-			id: 2,
-			name: "Ona tili",
-		},
-		{
-			id: 3,
-			name: "Ingliz tili",
-		},
-	]
+	const [subjects, setSubjects] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const axiosInstance = useAxios();
+	const navigation = useNavigation();
+
+	useEffect(() => {
+		async function fetchSubjects() {
+			setIsLoading(true);
+			try {
+				const response = await axiosInstance.get("/subjects/");
+				setSubjects(response.data);
+			} catch (error) {
+				Alert.alert(
+					"Xatolik",
+					"Sessiya vaqti tugadi, iltimos, qayatadan tizimga kiring"
+				);
+				navigation.navigate("login");
+			} finally {
+				setIsLoading(false);
+			}
+		}
+
+		fetchSubjects();
+	}, []);
+
 	return (
 		<Container>
 			<View style={styles.header}>
@@ -31,30 +47,22 @@ function SubjectsScreen() {
 							<Text style={[styles.columnText, styles.headerRowText]}>№</Text>
 						</View>
 						<View style={[styles.column, { flex: 8 }]}>
-							<Text style={[styles.columnText, styles.headerRowText]}>Fan nomi</Text>
+							<Text style={[styles.columnText, styles.headerRowText]}>
+								Fan nomi
+							</Text>
 						</View>
-						<View style={[styles.column, { flex: 3 }]}>
-							{/* Icons here */}
-						</View>
+						<View style={[styles.column, { flex: 3 }]}>{/* Icons here */}</View>
 					</View>
-					<FlatList alwaysBounceVertical={false} data={SUBJECTS} renderItem={({ item, index }) => (
-						<View style={styles.row}>
-							<View style={[styles.column, { flex: 1 }]}>
-								<Text style={styles.columnText}>{index + 1}</Text>
-							</View>
-							<View style={[styles.column, { flex: 8 }]}>
-								<Text style={styles.columnText}>{item.name}</Text>
-							</View>
-							<View style={[styles.column, { flex: 3, flexDirection: "row", gap: 4 }]}>
-								<TouchableOpacity style={[styles.icon, { backgroundColor: "orange" }]}>
-									<Ionicons name="pencil-outline" size={20} color="white" />
-								</TouchableOpacity>
-								<TouchableOpacity style={[styles.icon, { backgroundColor: "red" }]}>
-									<Ionicons name="trash-outline" size={20} color="white" />
-								</TouchableOpacity>
-							</View>
-						</View>
-					)} />
+					{isLoading && <ModalOverLay visible={isLoading} />}
+					{!isLoading && (
+						<FlatList
+							alwaysBounceVertical={false}
+							data={subjects}
+							renderItem={({ item, index }) => (
+								<SubjectTableItem item={item} index={index} />
+							)}
+						/>
+					)}
 				</View>
 			</View>
 		</Container>
@@ -87,20 +95,15 @@ const styles = StyleSheet.create({
 	column: {
 		// borderBottomWidth: 1,
 		// borderBottomColor: "#232323",
-	},	
+	},
 	columnText: {
 		fontSize: 16,
 		textAlign: "center",
 	},
 	btn: {
 		paddingVertical: 8,
-		backgroundColor: "#232323"
+		backgroundColor: "#232323",
 	},
-	icon: {
-		borderRadius: 4,
-		paddingVertical: 4,
-		paddingHorizontal: 8,
-	}
 });
 
 export default SubjectsScreen;
