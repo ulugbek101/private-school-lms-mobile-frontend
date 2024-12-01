@@ -85,6 +85,7 @@ function AuthContextProvider({ children }) {
 
 	const value = {
 		user,
+		setUser,
 		authTokens,
 		login,
 		logout,

@@ -5,10 +5,11 @@ import { Ionicons } from "react-native-vector-icons"
 
 import LoginScreen from "./screens/LoginScreen"
 
-import { useContext, useEffect } from "react"
+import { useContext } from "react"
+import SubjectNew from "./screens/SubjectNew"
 import AuthContextProvider, { AuthContext } from "./store/auth-context"
 import { DrawerLinks } from "./utils/drawer-links"
-import { StatusBar } from "react-native"
+import SubjectUpdate from "./screens/SubjectUpdate"
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -41,6 +42,8 @@ function App() {
 				<Stack.Navigator initialRouteName="drawer">
 					<Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
 					<Stack.Screen name="drawer" component={DrawerNavigator} options={{ headerShown: false }} />
+					<Stack.Screen name="subject-new" component={SubjectNew} options={{headerTitle: "Yangi fan", headerBackTitle: "Fanlar", headerTitleAlign: "center" }} />
+					<Stack.Screen name="subject-update" component={SubjectUpdate} options={{headerTitle: "Fanni yangilash", headerBackTitle: "Fanlar", headerTitleAlign: "center" }} />
 				</Stack.Navigator>
 			</AuthContextProvider>
 		</NavigationContainer>

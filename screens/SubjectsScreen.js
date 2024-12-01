@@ -15,30 +15,38 @@ function SubjectsScreen() {
 	const axiosInstance = useAxios();
 	const navigation = useNavigation();
 
-	useEffect(() => {
-		async function fetchSubjects() {
-			setIsLoading(true);
-			try {
-				const response = await axiosInstance.get("/subjects/");
-				setSubjects(response.data);
-			} catch (error) {
-				Alert.alert(
-					"Xatolik",
-					"Sessiya vaqti tugadi, iltimos, qayatadan tizimga kiring"
-				);
-				navigation.navigate("login");
-			} finally {
-				setIsLoading(false);
-			}
+	async function fetchSubjects() {
+		setIsLoading(true);
+		try {
+			const response = await axiosInstance.get("/subjects/");
+			setSubjects(response.data);
+		} catch (error) {
+			Alert.alert(
+				"Xatolik",
+				"Sessiya vaqti tugadi, iltimos, qayatadan tizimga kiring"
+			);
+			navigation.navigate("login");
+		} finally {
+			setIsLoading(false);
 		}
+	}
 
+	useEffect(() => {
 		fetchSubjects();
 	}, []);
+
+	function handleNewSubject() {
+		navigation.navigate("subject-new", { fetchSubjects: fetchSubjects });
+	}
 
 	return (
 		<Container>
 			<View style={styles.header}>
-				<Button btnStyle={styles.btn} text="+ Fan qo'shish" />
+				<Button
+					onPress={handleNewSubject}
+					btnStyle={styles.btn}
+					text="+ Fan qo'shish"
+				/>
 			</View>
 			<View style={styles.tableContainer}>
 				<View style={styles.table}>
@@ -59,7 +67,11 @@ function SubjectsScreen() {
 							alwaysBounceVertical={false}
 							data={subjects}
 							renderItem={({ item, index }) => (
-								<SubjectTableItem item={item} index={index} />
+								<SubjectTableItem
+									item={item}
+									index={index}
+									fetchSubjects={fetchSubjects}
+								/>
 							)}
 						/>
 					)}
