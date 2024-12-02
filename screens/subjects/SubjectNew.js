@@ -1,27 +1,28 @@
 import { useState } from "react";
 import { Alert, StyleSheet, TextInput } from "react-native";
-import Container from "../components/Layouts/Container";
-import LoadingOverlay from "../components/LoadingOverlay";
-import Button from "../components/UI/Button";
-import useAxios from "../hooks/useAxios";
+import Container from "../../components/Layouts/Container";
+import LoadingOverlay from "../../components/LoadingOverlay";
+import Button from "../../components/UI/Button";
+import useAxios from "../../hooks/useAxios";
 
-function SubjectUpdate({ route, navigation }) {
-	const [subjectName, setSubjectName] = useState(route.params.subject.name);
+function SubjectNew({ route, navigation }) {
+	const [subjectName, setSubjectName] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const axiosInstance = useAxios();
 
-	async function onSubjectUpdate() {
+	async function onNewSubjectAdd() {
 		setIsLoading(true);
 		try {
-			const response = await axiosInstance.patch(`/subjects/${route.params.subject.id}/`, {
+			await axiosInstance.post("/subjects/", {
 				name: subjectName,
 			});
 			setIsLoading(false);
 			navigation.goBack();
 			route.params.fetchSubjects();
-            Alert.alert("Fan nomi muvaffaqiyatli o'zgartirildi")
 		} catch (error) {
-			if (error.status === 400) {
+			if (error.status === 400 && error.response.data.name) {
+				Alert.alert("Xatolik", "Fan nomi bo'sh bo'lishi mumkin emas");
+			} else if (error.status === 400) {
 				Alert.alert("Xatolik", "Bunday nomga ega fan allaqachon mavjud");
 			}
 		} finally {
@@ -42,7 +43,7 @@ function SubjectUpdate({ route, navigation }) {
 				autoCorrect={false}
 			/>
 			<Button
-				onPress={onSubjectUpdate}
+				onPress={onNewSubjectAdd}
 				btnStyle={styles.button}
 				text="Fanni qo'shish"
 			/>
@@ -71,4 +72,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default SubjectUpdate;
+export default SubjectNew;

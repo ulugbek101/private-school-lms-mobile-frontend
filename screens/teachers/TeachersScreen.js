@@ -1,49 +1,40 @@
-import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import Container from "../components/Layouts/Container";
-import ModalOverLay from "../components/LoadingOverlay";
-import Button from "../components/UI/Button";
+import Container from "../../components/Layouts/Container";
+import LoadingOverlay from "../../components/LoadingOverlay";
+import TeacherTableItem from "../../components/Teachers/TeacherTableItem";
+import Button from "../../components/UI/Button";
+import useAxios from "../../hooks/useAxios";
 
-import SubjectTableItem from "../components/Subjects/SubjectTableItem";
-import useAxios from "../hooks/useAxios";
-
-function SubjectsScreen() {
-	const [subjects, setSubjects] = useState([]);
+function TeachersScreen() {
+	const [teachers, setTeachers] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const axiosInstance = useAxios();
-	const navigation = useNavigation();
 
-	async function fetchSubjects() {
+	async function fetchTeachers() {
 		setIsLoading(true);
 		try {
-			const response = await axiosInstance.get("/subjects/");
-			setSubjects(response.data);
+			const response = await axiosInstance.get("/teachers/");
+			setTeachers(response.data);
 		} catch (error) {
-			Alert.alert(
-				"Xatolik",
-				"Sessiya vaqti tugadi, iltimos, qayatadan tizimga kiring"
-			);
-			navigation.navigate("login");
+			console.log(error);
 		} finally {
 			setIsLoading(false);
 		}
 	}
 
-	useEffect(() => {
-		fetchSubjects();
-	}, []);
+	function handleNewTeacher() {}
 
-	function handleNewSubject() {
-		navigation.navigate("subject-new", { fetchSubjects: fetchSubjects });
-	}
+	useEffect(() => {
+		fetchTeachers();
+	}, []);
 
 	return (
 		<Container>
 			<View style={styles.header}>
 				<Button
-					onPress={handleNewSubject}
+					onPress={handleNewTeacher}
 					btnStyle={styles.btn}
 					text="+ Fan qo'shish"
 				/>
@@ -55,22 +46,20 @@ function SubjectsScreen() {
 							<Text style={[styles.columnText, styles.headerRowText]}>№</Text>
 						</View>
 						<View style={[styles.column, { flex: 8 }]}>
-							<Text style={[styles.columnText, styles.headerRowText]}>
-								Fan nomi
-							</Text>
+							<Text style={[styles.columnText, styles.headerRowText]}>FIO</Text>
 						</View>
 						<View style={[styles.column, { flex: 3 }]}>{/* Icons here */}</View>
 					</View>
-					{isLoading && <ModalOverLay visible={isLoading} />}
+					{isLoading && <LoadingOverlay visible={isLoading} />}
 					{!isLoading && (
 						<FlatList
 							alwaysBounceVertical={false}
-							data={subjects}
+							data={teachers}
 							renderItem={({ item, index }) => (
-								<SubjectTableItem
+								<TeacherTableItem
 									item={item}
 									index={index}
-									fetchSubjects={fetchSubjects}
+									fetchTeachers={fetchTeachers}
 								/>
 							)}
 						/>
@@ -104,10 +93,6 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderBottomColor: "#232323",
 	},
-	column: {
-		// borderBottomWidth: 1,
-		// borderBottomColor: "#232323",
-	},
 	columnText: {
 		fontSize: 16,
 		textAlign: "center",
@@ -118,4 +103,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default SubjectsScreen;
+export default TeachersScreen;

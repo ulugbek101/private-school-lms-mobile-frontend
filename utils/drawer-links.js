@@ -1,13 +1,12 @@
 import AnalyticsScreen from "../screens/AnalyticsScreen";
 import GroupsScreen from "../screens/GroupsScreen";
 import PaymentsScreen from "../screens/PaymentsScreen";
-import StudentsScreen from "../screens/StudentsScreen";
-import SubjectsScreen from "../screens/SubjectsScreen";
-import TeachersScreen from "../screens/TeachersScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import StudentsScreen from "../screens/StudentsScreen";
+import SubjectsScreen from "../screens/subjects/SubjectsScreen";
+import TeachersScreen from "../screens/teachers/TeachersScreen";
 
-import { Ionicons } from "react-native-vector-icons"
-
+import { Ionicons } from "react-native-vector-icons";
 
 function DrawerIcons(status, name, focused, size, color) {
 	const iconMap = {
